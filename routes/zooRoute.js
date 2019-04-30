@@ -83,6 +83,50 @@ router.post('/', (req, res) => {
   }
 })
 
+router.put('/:id', (req, res) => {
+  if (req.body.name) {  
+    zoo('zoos')
+    .where({ id: req.params.id })
+    .update(req.body)
+    .then(count => {
+      if(count > 0) {
+        res.status(202).json({
+          message: `${count} ${count > 1 ? 'records' : 'record'} updated`
+        })
+      }
+      else{
+        return missingError(res);
+      }
+    })
+    .catch( err => {
+      return sendError(err, res);
+    })
+  }
+  else {
+    return newError(406, 'Please Provide New Name!', res);
+  }
+})
+
+router.delete('/:id', (req, res) => {
+  zoo('zoos')
+  .where({ id: req.params.id })
+  .del()
+  .then(count => {
+    if(count > 0) {
+      res.status(202).json({
+        message: `${count} ${count > 1 ? 'records' : 'record'} deleted`
+      })
+    }
+    else{
+      return missingError(res);
+    }
+  })
+  .catch( err => {
+    return sendError(err, res);
+  })
+})
+
+
 
 //export 
 module.exports = router
